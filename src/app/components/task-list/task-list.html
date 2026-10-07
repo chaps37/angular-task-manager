@@ -1,3 +1,5 @@
+
+
 <div class="task-container">
 
   <div class="task-header">
@@ -6,7 +8,24 @@
     <button class="add-button" (click)="addTask()">
       + Add Task
     </button>
-    
+
+    <div class="search-conntainer">
+      <input
+      type="text"
+      placeholder="Search tasks..."
+      [(ngModel)]="searchTerm"
+      />
+    </div>
+    <div class="filtered-container">
+      <label for="statusFilter"> Filter by Status: </label>
+      <select id="statusFilter" [(ngModel)]="statusFilter" 
+      >
+        <option value ="all"> All</option>
+        <option value ="todo"> Todo</option>
+        <option value ="in-progress"> In Progress</option>
+        <option value ="completed"> Completed</option>
+      </select>
+    </div>
   </div>
   
     @if (showForm) {
@@ -18,7 +37,7 @@
       <input type="text" formControlName="title">
 
       <label>Description</label>
-      <textarea></textarea>
+      <textarea formControlName ="description"></textarea>
 
       <label>Status</label>
       <select formControlName="status">
@@ -48,7 +67,7 @@
     </form>
   }
 
-  @for (task of tasks; track task.id) {
+  @for (task of filteredTasks; track task.id) {
 
     <div class="task-card">
 
@@ -61,6 +80,14 @@
         <span>Priority: {{ task.priority }}</span>
         <span>Due: {{ task.dueDate }}</span>
       </div>
+
+      <button (click)="editTask(task)">
+        Edit
+      </button>
+       
+    <button (click)="deleteTask(task.id)">
+      Delete
+    </button>
 
     </div>
 

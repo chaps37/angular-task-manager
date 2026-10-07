@@ -43,4 +43,17 @@ export class TaskService {
    addTask(task: Task): void {
     this.tasks.push(task);
    }
+
+   updateTask(updatedTask: Task) : void {
+    const index = this.tasks.findIndex(task => task.id === updatedTask.id);
+
+    if (index !== -1) {
+        this.tasks[index] = updatedTask;
+    }
+   }
+
+   deleteTask(id:number): void {
+    this.tasks =this.tasks.filter(task => task.id !== id);
+   }
+
 }
