@@ -1,59 +1,29 @@
-import { Service } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Task } from '../models/task';
 
-@Service()
+@Injectable({
+  providedIn: 'root'
+})
 export class TaskService {
-    private tasks: Task [] = [
-        {
-            id:1,
-            title: 'Build portfolio website',
-            description: 'Create my angular portfolio project',
-            status: 'in-progress',
-            priority:'high',
-            dueDate: '2026-09-20',
-            category:'Portfolio'
-        },
-        {
-            id:2,
-            title: 'Update Resume',
-            description: 'Add my new Angular Project to my resume',
-            status: 'todo',
-            priority:'medium',
-            dueDate: '2026-09-18',
-            category:'Carrer'
-        },
-        {
-            id:3,
-            title: 'Learn Angular routing',
-            description: 'Practice Angular Routing and navigation',
-            status: 'completed',
-            priority:'low',
-            dueDate: '2026-09-15',
-            category:'Learning'
-        },
-        
-        
+  private http = inject(HttpClient);
+  private apiUrl = 'http://localhost:3001/api/tasks';
 
-    ];
-    getTasks(): Task[] {
-        return this.tasks;
- 
-   }
+  getTasks(): Observable<Task[]> {
+    return this.http.get<Task[]>(this.apiUrl);
+  }
 
-   addTask(task: Task): void {
-    this.tasks.push(task);
-   }
+  addTask(task: Task): Observable<Task> {
+    const { id, ...newTask } = task;
+    return this.http.post<Task>(this.apiUrl, newTask);
+  }
 
-   updateTask(updatedTask: Task) : void {
-    const index = this.tasks.findIndex(task => task.id === updatedTask.id);
+  updateTask(task: Task): Observable<Task> {
+    return this.http.put<Task>(`${this.apiUrl}/${task.id}`, task);
+  }
 
-    if (index !== -1) {
-        this.tasks[index] = updatedTask;
-    }
-   }
-
-   deleteTask(id:number): void {
-    this.tasks =this.tasks.filter(task => task.id !== id);
-   }
-
+  deleteTask(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }
